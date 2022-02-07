@@ -15,11 +15,16 @@
     }
   },
   {
+    "type": "comment",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "identifier",
     "named": true,
     "fields": {},
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": false,
       "types": [
         {
@@ -35,7 +40,7 @@
     "fields": {},
     "children": {
       "multiple": true,
-      "required": true,
+      "required": false,
       "types": [
         {
           "type": "identifier",
@@ -50,6 +55,21 @@
     "fields": {}
   },
   {
+    "type": "python_task_declaration",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "task_declaration",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "source_file",
     "named": true,
     "fields": {},
@@ -58,7 +78,15 @@
       "required": false,
       "types": [
         {
+          "type": "comment",
+          "named": true
+        },
+        {
           "type": "inherit",
+          "named": true
+        },
+        {
+          "type": "python_task_declaration",
           "named": true
         },
         {
@@ -128,7 +156,15 @@
     }
   },
   {
+    "type": "\n",
+    "named": false
+  },
+  {
     "type": "\"",
+    "named": false
+  },
+  {
+    "type": "#",
     "named": false
   },
   {
@@ -140,6 +176,14 @@
     "named": false
   },
   {
+    "type": "+=",
+    "named": false
+  },
+  {
+    "type": ".=",
+    "named": false
+  },
+  {
     "type": ":",
     "named": false
   },
@@ -148,7 +192,27 @@
     "named": false
   },
   {
+    "type": "=+",
+    "named": false
+  },
+  {
+    "type": "?=",
+    "named": false
+  },
+  {
+    "type": "??=",
+    "named": false
+  },
+  {
+    "type": "export",
+    "named": false
+  },
+  {
     "type": "inherit",
+    "named": false
+  },
+  {
+    "type": "python",
     "named": false
   },
   {

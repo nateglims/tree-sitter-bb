@@ -17,11 +17,19 @@
         },
         {
           "type": "SYMBOL",
+          "name": "python_task_declaration"
+        },
+        {
+          "type": "SYMBOL",
           "name": "task_declaration"
         },
         {
           "type": "SYMBOL",
           "name": "variable_declaration"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "comment"
         }
       ]
     },
@@ -29,16 +37,66 @@
       "type": "SEQ",
       "members": [
         {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "export"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
           "type": "SYMBOL",
           "name": "identifier"
         },
         {
-          "type": "STRING",
-          "value": "="
-        },
-        {
-          "type": "SYMBOL",
-          "name": "string"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "STRING",
+                      "value": "="
+                    },
+                    {
+                      "type": "STRING",
+                      "value": ".="
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "+="
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "?="
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "??="
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "=+"
+                    }
+                  ]
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "string"
+                }
+              ]
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
         }
       ]
     },
@@ -64,6 +122,19 @@
         {
           "type": "SYMBOL",
           "name": "block"
+        }
+      ]
+    },
+    "python_task_declaration": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "python"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "task_declaration"
         }
       ]
     },
@@ -114,11 +185,20 @@
       ]
     },
     "_inherit_decl": {
-      "type": "REPEAT1",
-      "content": {
-        "type": "SYMBOL",
-        "name": "identifier"
-      }
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "REPEAT1",
+          "content": {
+            "type": "SYMBOL",
+            "name": "identifier"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "\n"
+        }
+      ]
     },
     "string": {
       "type": "SEQ",
@@ -129,7 +209,7 @@
         },
         {
           "type": "PATTERN",
-          "value": "[^\"]+"
+          "value": "[^\"]*"
         },
         {
           "type": "STRING",
@@ -149,7 +229,7 @@
           },
           {
             "type": "PATTERN",
-            "value": "[a-z_]+"
+            "value": "[a-zA-Z0-9_${}\\-]+"
           }
         ]
       }
@@ -159,19 +239,27 @@
       "members": [
         {
           "type": "PATTERN",
-          "value": "[A-Za-z_]+"
+          "value": "[@A-Za-z0-9_{}$\\-\\[\\]\\.]+"
         },
         {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "override"
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "override"
+          }
+        }
+      ]
+    },
+    "comment": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "#"
+        },
+        {
+          "type": "PATTERN",
+          "value": ".*"
         }
       ]
     }

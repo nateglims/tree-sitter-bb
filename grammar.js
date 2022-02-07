@@ -5,15 +5,29 @@ module.exports = grammar({
 
 		_declaration: $ => choice(
 			$.inherit,
+            $.python_task_declaration,
 			$.task_declaration,
-			$.variable_declaration
+			$.variable_declaration,
+            $.comment
 			// TODO: Python tasks?
 		),
 
 		variable_declaration: $ => seq(
+            optional('export'),
 			$.identifier,
-			'=',
-			$.string
+            optional(
+                seq(
+                    choice(
+                        '=',
+                        '.=',
+                        '+=',
+                        '?=',
+                        '??=',
+                        '=+', // ??? Not sure this is valid?
+                    ),
+                    $.string
+                )
+            )
 		),
 
 		task_declaration: $ => seq(
@@ -22,6 +36,11 @@ module.exports = grammar({
 			')',
 			$.block
 		),
+
+        python_task_declaration: $ => seq(
+            'python',
+            $.task_declaration
+        ),
 
 		block: $ => seq(
 			'{',
@@ -39,18 +58,24 @@ module.exports = grammar({
 			prec.left(1, $._inherit_decl)
 		),
 
-		_inherit_decl: $ => repeat1($.identifier),
+		_inherit_decl: $ => seq(
+            repeat1($.identifier),
+            "\n"
+        ),
 
-		string: $ => seq('"', /[^"]+/, '"'),
+		string: $ => seq('"', /[^"]*/, '"'),
 
 		override: $ => prec(1, seq(
 			':',
-			/[a-z_]+/
+			/[a-zA-Z0-9_${}\-]+/
 		)),
 
 		identifier: $ => seq(
-			/[A-Za-z_]+/,
-			optional($.override)
-		)
+            // TODO: Parse out array/map data separately.
+			/[@A-Za-z0-9_{}$\-\[\]\.]+/,
+			repeat($.override)
+		),
+
+        comment: $ => seq('#', /.*/)
 	}
 });
