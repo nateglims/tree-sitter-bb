@@ -1,3 +1,9 @@
 "inherit" @keyword
-(task_identifier) @function
+
+(task_declaration name: (identifier) @function)
+
 (string) @string
+
+[
+    "="
+] @operator

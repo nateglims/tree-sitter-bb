@@ -1,0 +1,16 @@
+==================
+Task Declaration
+==================
+
+do_configure:prepend() {
+    sed -i s:\ lib/cmake:\ ${baselib}/cmake:g ${S}/src/CMakeLists.txt
+}
+
+---
+
+(source_file
+  (task_declaration
+    (identifier
+      (override))
+    (block
+      (statement))))

@@ -1,40 +1,37 @@
 module.exports = grammar({
-    name: 'BB',
-    rules: {
-        source_file: $ => repeat($._declaration),
+	name: 'BB',
+	rules: {
+		source_file: $ => repeat($._declaration),
 
-        _declaration: $ => choice(
+		_declaration: $ => choice(
 			$.inherit,
-            $.task_declaration,
-            $.variable_declaration
-            // TODO: Tasks and others.
-        ),
+			$.task_declaration,
+			$.variable_declaration
+			// TODO: Python tasks?
+		),
 
-        variable_declaration: $ => seq(
-            $.identifier,
-            '=',
-            $.string
-        ),
+		variable_declaration: $ => seq(
+			$.identifier,
+			'=',
+			$.string
+		),
 
 		task_declaration: $ => seq(
-			$.task_identifier,
+			field('name', $.identifier),
 			'(',
 			')',
 			$.block
-        ),
-
-		task_identifier: $ => seq(
-			/[a-z:_]+/
 		),
 
 		block: $ => seq(
 			'{',
+			// TODO: Highlight shell and python in this block.
 			repeat($.statement),
 			'}'
 		),
 
 		statement: $ => seq(
-            /[^\n]+/
+			/[^\n]+/
 		),
 
 		inherit: $ => seq(
@@ -42,11 +39,18 @@ module.exports = grammar({
 			prec.left(1, $._inherit_decl)
 		),
 
-		_inherit_decl: $=> repeat1($.identifier),
+		_inherit_decl: $ => repeat1($.identifier),
 
-        string: $ => seq( '"', /[^"]+/, '"' ),
+		string: $ => seq('"', /[^"]+/, '"'),
 
-        identifier: $ => /[A-Za-z_:]+/
-    }
+		override: $ => prec(1, seq(
+			':',
+			/[a-z_]+/
+		)),
+
+		identifier: $ => seq(
+			/[A-Za-z_]+/,
+			optional($.override)
+		)
+	}
 });
-

@@ -1,0 +1,11 @@
+==================
+Inherit Statements
+==================
+
+inherit cmake
+
+---
+
+(source_file
+  (inherit
+    (identifier)))

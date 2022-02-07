@@ -1,0 +1,12 @@
+==================
+Variable Declaration
+==================
+
+LICENSE = "EPL-2.0 | EDL-1.0"
+
+---
+
+(source_file
+  (variable_declaration
+    (identifier)
+    (string)))
