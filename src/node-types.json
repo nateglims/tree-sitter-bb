@@ -1,5 +1,20 @@
 [
   {
+    "type": "addtask",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "block",
     "named": true,
     "fields": {},
@@ -20,6 +35,21 @@
     "fields": {}
   },
   {
+    "type": "export",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "identifier",
     "named": true,
     "fields": {},
@@ -35,19 +65,14 @@
     }
   },
   {
+    "type": "include",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "inherit",
     "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": false,
-      "types": [
-        {
-          "type": "identifier",
-          "named": true
-        }
-      ]
-    }
+    "fields": {}
   },
   {
     "type": "override",
@@ -70,6 +95,11 @@
     }
   },
   {
+    "type": "require",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "source_file",
     "named": true,
     "fields": {},
@@ -78,7 +108,19 @@
       "required": false,
       "types": [
         {
+          "type": "addtask",
+          "named": true
+        },
+        {
           "type": "comment",
+          "named": true
+        },
+        {
+          "type": "export",
+          "named": true
+        },
+        {
+          "type": "include",
           "named": true
         },
         {
@@ -87,6 +129,10 @@
         },
         {
           "type": "python_task_declaration",
+          "named": true
+        },
+        {
+          "type": "require",
           "named": true
         },
         {
@@ -107,6 +153,39 @@
   },
   {
     "type": "string",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "string2",
+          "named": true
+        },
+        {
+          "type": "string_escape",
+          "named": true
+        },
+        {
+          "type": "string_expansion",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "string2",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "string_escape",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "string_expansion",
     "named": true,
     "fields": {}
   },
@@ -168,6 +247,14 @@
     "named": false
   },
   {
+    "type": "${",
+    "named": false
+  },
+  {
+    "type": "'",
+    "named": false
+  },
+  {
     "type": "(",
     "named": false
   },
@@ -188,11 +275,19 @@
     "named": false
   },
   {
+    "type": ":=",
+    "named": false
+  },
+  {
     "type": "=",
     "named": false
   },
   {
     "type": "=+",
+    "named": false
+  },
+  {
+    "type": "=.",
     "named": false
   },
   {
@@ -204,7 +299,19 @@
     "named": false
   },
   {
+    "type": "\\\\",
+    "named": false
+  },
+  {
+    "type": "addtask",
+    "named": false
+  },
+  {
     "type": "export",
+    "named": false
+  },
+  {
+    "type": "include",
     "named": false
   },
   {
@@ -213,6 +320,10 @@
   },
   {
     "type": "python",
+    "named": false
+  },
+  {
+    "type": "require",
     "named": false
   },
   {

@@ -1,81 +1,131 @@
 module.exports = grammar({
-	name: 'BB',
-	rules: {
-		source_file: $ => repeat($._declaration),
+    name: 'BB',
+    rules: {
+        source_file: $ => repeat($._declaration),
 
-		_declaration: $ => choice(
-			$.inherit,
+        _declaration: $ => choice(
+            $.inherit,
+            $.require,
+            $.addtask,
+            $.export,
+            $.include,
             $.python_task_declaration,
-			$.task_declaration,
-			$.variable_declaration,
+            $.task_declaration,
+            $.variable_declaration,
             $.comment
-			// TODO: Python tasks?
-		),
+        ),
 
-		variable_declaration: $ => seq(
+        variable_declaration: $ => seq(
             optional('export'),
-			$.identifier,
-            optional(
-                seq(
-                    choice(
-                        '=',
-                        '.=',
-                        '+=',
-                        '?=',
-                        '??=',
-                        '=+', // ??? Not sure this is valid?
-                    ),
-                    $.string
-                )
-            )
-		),
+            $.identifier,
+            choice(
+                    '=',
+                    '.=',
+                    '+=',
+                    ':=',
+                    '?=',
+                    '??=',
+                    '=+',
+                    '=.',
+            ),
+            $.string
+        ),
 
-		task_declaration: $ => seq(
-			field('name', $.identifier),
-			'(',
-			')',
-			$.block
-		),
+        task_declaration: $ => seq(
+            field('name', $.identifier),
+            '(',
+            ')',
+            $.block
+        ),
 
         python_task_declaration: $ => seq(
             'python',
             $.task_declaration
         ),
 
-		block: $ => seq(
-			'{',
-			// TODO: Highlight shell and python in this block.
-			repeat($.statement),
-			'}'
-		),
-
-		statement: $ => seq(
-			/[^\n]+/
-		),
-
-		inherit: $ => seq(
-			'inherit',
-			prec.left(1, $._inherit_decl)
-		),
-
-		_inherit_decl: $ => seq(
-            repeat1($.identifier),
-            "\n"
+        block: $ => seq(
+            '{',
+            // TODO: Highlight shell and python in this block.
+            repeat($.statement),
+            '}'
         ),
 
-		string: $ => seq('"', /[^"]*/, '"'),
+        statement: $ => seq(
+            /[^\n]+/
+        ),
 
-		override: $ => prec(1, seq(
-			':',
-			/[a-zA-Z0-9_${}\-]+/
-		)),
+        inherit: $ => seq(
+            'inherit',
+            repeat1(/[^ \n]+/),
+            '\n'
+        ),
 
-		identifier: $ => seq(
+        require: $ => seq(
+            'require',
+            $._require_path,
+            '\n'
+        ),
+
+        _require_path: $ => seq(
+            repeat1(/[^\n]*/),
+        ),
+
+        addtask: $ => seq(
+            'addtask',
+            repeat1($.identifier),
+            /\n/
+        ),
+
+        export: $ => seq(
+            'export',
+            repeat1($.identifier),
+            /\n/
+        ),
+
+        include: $ => seq(
+            'include',
+            /[^ \n]+/,
+            /\n/
+        ),
+
+        // TODO: Handle nested variable expansions.
+        string: $ => choice(
+            seq(
+                '"', 
+                repeat(choice($.string_expansion, $.string_escape, /[^"]/)),
+                '"'
+            ),
+            $.string2,
+        ),
+
+        string2: $ => seq(
+            "'",
+            repeat(/[^']/),
+            "'",
+        ),
+
+        string_expansion: $ => seq(
+            "${",
+            /[^}]*/,
+            "}",
+        ),
+
+        string_escape: $ => seq(
+            '\\\\',
+            /"/,
+        ),
+
+        override: $ => prec(1, seq(
+            ':',
+            /[a-zA-Z0-9_${}\-]+/
+        )),
+
+        identifier: $ => seq(
             // TODO: Parse out array/map data separately.
-			/[@A-Za-z0-9_{}$\-\[\]\.]+/,
-			repeat($.override)
-		),
+            /[@A-Za-z0-9_{}$\-\[\]\.]+/,
+            repeat($.override)
+        ),
 
         comment: $ => seq('#', /.*/)
-	}
+    }
 });
