@@ -1,0 +1,128 @@
+============
+bitbake.conf
+============
+
+PN  = "${@bb.parse.vars_from_file(d.getVar('FILE', False),d)[0] or 'defaultpkgname'}"
+
+TMPDIR  = "${TOPDIR}/tmp"
+CACHE   = "${TMPDIR}/cache"
+STAMP   = "${TMPDIR}/${PN}/stamps"
+T       = "${TMPDIR}/${PN}/work"
+B       = "${TMPDIR}/${PN}"
+
+---
+
+(source_file
+	(variable_declaration
+		(identifier (variable_name))
+		(string
+			(python_expansion (inline_code))))
+	(variable_declaration
+		(identifier (variable_name))
+		(string
+			(shell_expansion (variable_name))
+			(string_text_fragment)))
+	(variable_declaration
+		(identifier (variable_name))
+		(string
+			(shell_expansion (variable_name))
+			(string_text_fragment)))
+	(variable_declaration
+		(identifier (variable_name))
+		(string
+			(shell_expansion (variable_name))
+			(string_text_fragment)
+			(shell_expansion (variable_name))
+			(string_text_fragment)))
+	(variable_declaration
+		(identifier (variable_name))
+		(string
+			(shell_expansion (variable_name))
+			(string_text_fragment)
+			(shell_expansion (variable_name))
+			(string_text_fragment)))
+	(variable_declaration
+		(identifier (variable_name))
+		(string
+			(shell_expansion (variable_name))
+			(string_text_fragment)
+			(shell_expansion (variable_name)))))
+
+==========
+layer.conf
+==========
+
+BBPATH .= ":${LAYERDIR}"
+BBFILES += "${LAYERDIR}/*.bb"
+BBFILE_COLLECTIONS += "mylayer"
+BBFILE_PATTERN_mylayer := "^${LAYERDIR_RE}/"
+
+---
+
+(source_file
+	(variable_declaration
+		(identifier (variable_name))
+		(string
+			(string_text_fragment)
+			(shell_expansion (variable_name))))
+	(variable_declaration
+		(identifier (variable_name))
+		(string
+			(shell_expansion (variable_name))
+			(string_text_fragment)))
+	(variable_declaration
+		(identifier (variable_name))
+		(string (string_text_fragment)))
+	(variable_declaration
+		(identifier (variable_name))
+		(string
+			(string_text_fragment)
+			(shell_expansion (variable_name))
+			(string_text_fragment))))
+
+=============
+printhello.bb
+=============
+
+DESCRIPTION = "Prints Hello World"
+PN = 'printhello'
+PV = '1'
+
+python do_build() {
+   bb.plain("********************");
+   bb.plain("*                  *");
+   bb.plain("*  Hello, World!   *");
+   bb.plain("*                  *");
+   bb.plain("********************");
+}
+
+---
+
+(source_file
+	(variable_declaration
+		(identifier (variable_name))
+		(string (string_text_fragment)))
+	(variable_declaration
+		(identifier (variable_name))
+		(string (string_text_fragment)))
+	(variable_declaration
+		(identifier (variable_name))
+		(string (string_text_fragment)))
+	(python_task_declaration
+		name: (identifier (variable_name))
+		(block (code_body))))
+
+=============
+bblayers.conf
+=============
+
+BBLAYERS ?= " \
+    /home/<you>/mylayer \
+"
+
+---
+
+(source_file
+	(variable_declaration
+		(identifier (variable_name))
+		(string (string_text_fragment))))

@@ -3,9 +3,14 @@ Inherit Statements
 ==================
 
 inherit cmake
+inherit one two three
 
 ---
 
 (source_file
   (inherit
-    (identifier)))
+    (class_name))
+  (inherit
+    (class_name)
+    (class_name)
+    (class_name)))

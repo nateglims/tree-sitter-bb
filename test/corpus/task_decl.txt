@@ -1,6 +1,6 @@
-==================
+================
 Task Declaration
-==================
+================
 
 do_configure:prepend() {
     sed -i s:\ lib/cmake:\ ${baselib}/cmake:g ${S}/src/CMakeLists.txt
@@ -9,8 +9,42 @@ do_configure:prepend() {
 ---
 
 (source_file
-  (task_declaration
+  (shell_task_declaration
     (identifier
+      (variable_name)
       (override))
     (block
-      (statement))))
+      (code_body))))
+
+=======================
+Python Task Declaration
+=======================
+
+python do_configure:prepend() {
+    bb.plain("hello")
+}
+
+---
+
+(source_file
+  (python_task_declaration
+    (identifier
+      (variable_name)
+      (override))
+    (block
+      (code_body))))
+
+=================================
+Anonymous Python Task Declaration
+=================================
+
+python() {
+    bb.plain("hello")
+}
+
+---
+
+(source_file
+  (python_task_declaration
+    (block
+      (code_body))))

@@ -1,0 +1,23 @@
+==========
+Python def
+==========
+
+def thing():
+    bb.plain("hello, world")
+
+    bb.plain("hello, world")
+
+    if thing:
+        bb.plain("hello, world")
+
+    # Python comment
+    bb.plain("hello, world")
+A = "back to normal"
+
+---
+
+(source_file
+  (python_function)
+  (variable_declaration
+    (identifier (variable_name))
+    (string (string_text_fragment))))

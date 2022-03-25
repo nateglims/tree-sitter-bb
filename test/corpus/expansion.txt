@@ -1,0 +1,141 @@
+================
+Simple expansion
+================
+
+A = "${hello}"
+B = 'A${hello}'
+C = "${hello}B"
+D = 'C${hello}D'
+
+---
+
+(source_file
+  (variable_declaration
+    (identifier (variable_name))
+    (string
+      (shell_expansion (variable_name))))
+  (variable_declaration
+    (identifier (variable_name))
+    (string
+      (string_text_fragment)
+      (shell_expansion (variable_name))))
+  (variable_declaration
+    (identifier (variable_name))
+    (string
+      (shell_expansion (variable_name))
+      (string_text_fragment)))
+  (variable_declaration
+    (identifier (variable_name))
+    (string
+      (string_text_fragment)
+      (shell_expansion (variable_name))
+      (string_text_fragment))))
+
+================
+Python expansion
+================
+
+A = "${@hello}"
+B = '${@hello.world()}'
+C = "${@hello.world({})}"
+D = '${@hello.world({C})}'
+
+---
+
+(source_file
+  (variable_declaration
+    (identifier (variable_name))
+    (string
+      (python_expansion (inline_code))))
+  (variable_declaration
+    (identifier (variable_name))
+    (string
+      (python_expansion (inline_code))))
+  (variable_declaration
+    (identifier (variable_name))
+    (string
+      (python_expansion (inline_code))))
+  (variable_declaration
+    (identifier (variable_name))
+    (string
+      (python_expansion (inline_code)))))
+
+===================
+Recursive expansion
+===================
+
+A = "${hello}"
+B = "${A${A}}"
+C = "${A${A${A}}}"
+
+---
+
+(source_file
+  (variable_declaration
+    (identifier (variable_name))
+    (string
+      (shell_expansion (variable_name))))
+  (variable_declaration
+    (identifier (variable_name))
+    (string
+      (shell_expansion
+        (variable_name
+          (shell_expansion
+            (variable_name))))))
+  (variable_declaration
+    (identifier (variable_name))
+    (string
+      (shell_expansion
+        (variable_name
+          (shell_expansion
+            (variable_name
+              (shell_expansion
+                (variable_name)))))))))
+
+====================
+Identifier expansion
+====================
+
+A${B} = "hello"
+A${B}C = "hello"
+A${@B}C = "hello"
+
+---
+
+(source_file
+  (variable_declaration
+    (identifier (variable_name (shell_expansion (variable_name))))
+    (string (string_text_fragment)))
+  (variable_declaration
+    (identifier (variable_name (shell_expansion (variable_name))))
+    (string (string_text_fragment)))
+  (variable_declaration
+    (identifier (variable_name (python_expansion (inline_code))))
+    (string (string_text_fragment))))
+
+==================
+Override expansion
+==================
+
+A:${B} = "hello"
+A:${B}C = "hello"
+A:${@B}C = "hello"
+
+---
+
+(source_file
+  (variable_declaration
+    (identifier
+      (variable_name)
+      (override (shell_expansion (variable_name))))
+    (string (string_text_fragment)))
+  (variable_declaration
+    (identifier
+      (variable_name)
+      (override (shell_expansion (variable_name))))
+    (string (string_text_fragment)))
+  (variable_declaration
+    (identifier
+      (variable_name)
+      (override (python_expansion (inline_code))))
+    (string (string_text_fragment))))
