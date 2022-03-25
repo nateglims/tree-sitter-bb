@@ -5,13 +5,17 @@ module.exports = grammar({
 
         _declaration: $ => choice(
             $.inherit,
-            $.require,
             $.addtask,
+            $.deltask,
+            $.addhandler,
             $.export,
+            $.unset,
             $.include,
+            $.export_functions,
+            $.shell_task_declaration,
             $.python_task_declaration,
-            $.task_declaration,
             $.variable_declaration,
+            $.python_function,
             $.comment
         ),
 
@@ -31,100 +35,163 @@ module.exports = grammar({
             $.string
         ),
 
-        task_declaration: $ => seq(
+        // TODO: Python expansion in shell tasks
+        shell_task_declaration: $ => seq(
             field('name', $.identifier),
             '(',
             ')',
             $.block
         ),
 
-        python_task_declaration: $ => seq(
-            'python',
-            $.task_declaration
-        ),
+        python_task_declaration: $ => seq('python', seq(
+            optional(field('name', $.identifier)),
+            '(',
+            ')',
+            $.block
+        )),
 
-        block: $ => seq(
-            '{',
-            // TODO: Highlight shell and python in this block.
-            repeat($.statement),
-            '}'
-        ),
+        block: $ => seq('{', optional($.code_body), '}'),
 
-        statement: $ => seq(
-            /[^\n]+/
-        ),
+        code_body: $ => repeat1(seq(/[^\n]+/)),
 
         inherit: $ => seq(
             'inherit',
-            repeat1(/[^ \n]+/),
+            repeat1($.class_name),
             '\n'
         ),
 
-        require: $ => seq(
-            'require',
-            $._require_path,
-            '\n'
-        ),
+        class_name: $ => alias($.variable_name, ''),
 
-        _require_path: $ => seq(
-            repeat1(/[^\n]*/),
-        ),
+        function_name: $ => alias($.variable_name, ''),
 
         addtask: $ => seq(
             'addtask',
-            repeat1($.identifier),
+            repeat1(choice('after', 'before', $.function_name)),
+            /\n/
+        ),
+
+        deltask: $ => seq(
+            'deltask',
+            repeat1($.function_name),
+            /\n/
+        ),
+
+        addhandler: $ => seq(
+            'addhandler',
+            repeat1($.function_name),
             /\n/
         ),
 
         export: $ => seq(
             'export',
-            repeat1($.identifier),
+            repeat1($.variable_name),
+            /\n/
+        ),
+
+        unset: $ => seq(
+            'unset',
+            repeat1($.variable_name),
             /\n/
         ),
 
         include: $ => seq(
-            'include',
-            /[^ \n]+/,
+            choice('include', 'require'),
+            /\s+/,
+            alias(repeat1($._include_path_fragment), $.path),
             /\n/
         ),
 
-        // TODO: Handle nested variable expansions.
+        _include_path_fragment: $ => choice(
+            $._expansion,
+            token.immediate(/\$[^{]/),
+            token.immediate(/[^$\n]+/)),
+
+        export_functions: $ => seq(
+            'EXPORT_FUNCTIONS',
+            repeat1($.function_name),
+            /\n/
+        ),
+
         string: $ => choice(
-            seq(
-                '"', 
-                repeat(choice($.string_expansion, $.string_escape, /[^"]/)),
-                '"'
-            ),
-            $.string2,
+            seq('"', optional($._string_inner1), token.immediate('"')),
+            seq("'", optional($._string_inner2), token.immediate("'")),
         ),
 
-        string2: $ => seq(
-            "'",
-            repeat(/[^']/),
-            "'",
-        ),
+        _string_inner1: $ => repeat1(choice(
+            $._expansion,
+            alias($.string_text_fragment1, $.string_text_fragment))),
 
-        string_expansion: $ => seq(
-            "${",
-            /[^}]*/,
+        _string_inner2: $ => repeat1(choice(
+            $._expansion,
+            alias($.string_text_fragment2, $.string_text_fragment))),
+
+        _expansion: $ => choice($.python_expansion, $.shell_expansion),
+
+        python_expansion: $ => seq(
+            token.immediate("${@"),
+            $.inline_code,
             "}",
         ),
 
-        string_escape: $ => seq(
-            '\\\\',
-            /"/,
+        inline_code: $ => repeat1($._inline_code_inner),
+
+        // Match Python's balanced braces
+        _inline_code_inner: $ => choice(
+            seq("{", optional($._inline_code_inner), "}"),
+            /[^{}]+/),
+
+        shell_expansion: $ => seq(
+            token.immediate("${"),
+            $.variable_name,
+            "}",
         ),
+
+        string_text_fragment1: $ => token.immediate(/([^"$\n]|\\\n)+/),
+        string_text_fragment2: $ => token.immediate(/([^'$\n]|\\\n)+/),
+
+        flag: $ => seq(
+            token.immediate("["),
+            $.flag_name,
+            "]",
+        ),
+
+        flag_name: $ => /[^\]]+/,
 
         override: $ => prec(1, seq(
-            ':',
-            /[a-zA-Z0-9_${}\-]+/
+            token.immediate(':'),
+            choice(
+                token.immediate('append'),
+                token.immediate('prepend'),
+                token.immediate('remove'),
+                repeat1($._override_fragment))
         )),
 
+        _override_fragment: $ => choice(
+            $._expansion,
+            token.immediate(/\$[^{]/),
+            token.immediate(/[a-zA-Z0-9_{}\-]+/)),
+
         identifier: $ => seq(
-            // TODO: Parse out array/map data separately.
-            /[@A-Za-z0-9_{}$\-\[\]\.]+/,
-            repeat($.override)
+            $.variable_name,
+            optional(choice($.flag, repeat1($.override)))
         ),
+
+        variable_name: $ => seq(
+            // TODO: support starting with an expansion
+            /[a-zA-Z0-9_\-\.]+/,
+            repeat($._variable_fragment),
+        ),
+
+        _variable_fragment: $ => choice(
+            $._expansion,
+            token.immediate(/\$[^{]/),
+            token.immediate(/[a-zA-Z0-9_\-\.]+/)),
+
+        python_function: $ => seq("def", repeat($._python_code)),
+
+        // Anything that is either an empty line or a line that starts with a
+        // space or tab is considered in the same python `def`
+        _python_code: $ => token.immediate(/([ \t].+|)\n/),
 
         comment: $ => seq('#', /.*/)
     }
