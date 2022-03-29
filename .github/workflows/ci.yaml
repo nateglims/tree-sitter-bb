@@ -1,0 +1,48 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  Test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+      - name: Set up node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: Install Tree-Sitter CLI
+        run: |
+          npm install -g tree-sitter-cli
+      - name: Run Tests
+        run: |
+          tree-sitter test
+  Check-Against-Upstreams:
+    strategy:
+      matrix:
+        branch: [master, honister]
+        upstream: ["git://git.yoctoproject.org/poky", "git://git.openembedded.org/meta-openembedded"]
+    runs-on: ubuntu-latest
+    env:
+      SUCCESS_THRESHOLD: 94
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+      - name: Set up node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: Check out poky
+        run: |
+          git clone ${{ matrix.upstream }} -b ${{ matrix.branch}} upstream/
+      - name: Install Tree-Sitter CLI
+        run: |
+          npm install -g tree-sitter-cli
+      - name: Parse Recipes
+        run: |
+          set +e
+          SUCCESS_ACTUAL=$(tree-sitter parse upstream/**/*.bb -s -q | tee output | sed -nE 's/^Total parses.*success percentage:\s+([0-9.]+)%$/\1/p')
+          cat output
+          if (( $(echo "$SUCCESS_ACTUAL > $SUCCESS_THRESHOLD" | bc -l) == 0 )) ; then
+            echo Did not parse greater than 94% successfully.
+            exit 1
+          fi
