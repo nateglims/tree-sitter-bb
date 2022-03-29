@@ -1,12 +1,116 @@
-==================
+====================
 Variable Declaration
-==================
+====================
 
 LICENSE = "EPL-2.0 | EDL-1.0"
+A = "world's hello"
+B = '"hello, world"'
 
 ---
 
 (source_file
   (variable_declaration
-    (identifier)
-    (string)))
+    (identifier (variable_name))
+    (string (string_text_fragment)))
+  (variable_declaration
+    (identifier (variable_name))
+    (string (string_text_fragment)))
+  (variable_declaration
+    (identifier (variable_name))
+    (string (string_text_fragment))))
+
+=================
+Multiline strings
+=================
+
+A = "\
+hello"
+B = ' \
+hello'
+C = "hello\
+"
+D = ' \
+hello \
+'
+E = "\
+"
+F = ' \
+'
+G = " \
+  hello \
+  world \
+  bla \
+"
+
+---
+
+(source_file
+  (variable_declaration
+    (identifier (variable_name))
+    (string (string_text_fragment)))
+  (variable_declaration
+    (identifier (variable_name))
+    (string (string_text_fragment)))
+  (variable_declaration
+    (identifier (variable_name))
+    (string (string_text_fragment)))
+  (variable_declaration
+    (identifier (variable_name))
+    (string (string_text_fragment)))
+  (variable_declaration
+    (identifier (variable_name))
+    (string (string_text_fragment)))
+  (variable_declaration
+    (identifier (variable_name))
+    (string (string_text_fragment)))
+  (variable_declaration
+    (identifier (variable_name))
+    (string (string_text_fragment))))
+
+=========
+Overrides
+=========
+
+A:hello = "world"
+A:append = "world"
+A:prepend = "world"
+A:remove = "world"
+
+---
+
+(source_file
+  (variable_declaration
+    (identifier
+      (variable_name)
+      (override))
+    (string (string_text_fragment)))
+  (variable_declaration
+    (identifier
+      (variable_name)
+      (override))
+    (string (string_text_fragment)))
+  (variable_declaration
+    (identifier
+      (variable_name)
+      (override))
+    (string (string_text_fragment)))
+  (variable_declaration
+    (identifier
+      (variable_name)
+      (override))
+    (string (string_text_fragment))))
+
+=====
+Flags
+=====
+
+A[hello] = "world"
+
+---
+
+(source_file
+  (variable_declaration
+    (identifier
+      (variable_name)
+      (flag (flag_name)))
+    (string (string_text_fragment))))

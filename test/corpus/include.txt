@@ -1,0 +1,24 @@
+==================
+Include Statements
+==================
+
+include thing
+require thing
+include path/to/thing.bbinc
+require path/to/thing.bbinc
+include with${expansion}.bbinc
+require with${expansion}.bbinc
+
+---
+
+(source_file
+  (include (path))
+  (include (path))
+  (include (path))
+  (include (path))
+  (include
+    (path
+      (shell_expansion (variable_name))))
+  (include
+    (path
+      (shell_expansion (variable_name)))))
