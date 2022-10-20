@@ -191,7 +191,7 @@ module.exports = grammar({
 
         // Anything that is either an empty line or a line that starts with a
         // space or tab is considered in the same python `def`
-        _python_code: $ => token.immediate(/([ \t].+|)\n/),
+        _python_code: $ => token.immediate(/([ \t#].+|)\n/),
 
         comment: $ => seq('#', /.*/)
     }

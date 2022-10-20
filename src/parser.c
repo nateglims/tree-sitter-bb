@@ -1787,7 +1787,7 @@ static bool ts_lex(TSLexer *lexer, TSStateId state) {
       if (eof) ADVANCE(131);
       if (lookahead == '\n') ADVANCE(383);
       if (lookahead == '\r') SKIP(130)
-      if (lookahead == '#') ADVANCE(384);
+      if (lookahead == '#') ADVANCE(386);
       if (lookahead == 'E') ADVANCE(309);
       if (lookahead == 'a') ADVANCE(316);
       if (lookahead == 'd') ADVANCE(319);
@@ -4172,17 +4172,22 @@ static bool ts_lex(TSLexer *lexer, TSStateId state) {
       if (lookahead != 0) ADVANCE(15);
       END_STATE();
     case 386:
-      ACCEPT_TOKEN(aux_sym_comment_token1);
-      if (lookahead == '\t' ||
-          lookahead == '\r' ||
-          lookahead == ' ') ADVANCE(386);
+      ACCEPT_TOKEN(anon_sym_POUND);
       if (lookahead != 0 &&
-          lookahead != '\n') ADVANCE(387);
+          lookahead != '\n') ADVANCE(15);
       END_STATE();
     case 387:
       ACCEPT_TOKEN(aux_sym_comment_token1);
+      if (lookahead == '\t' ||
+          lookahead == '\r' ||
+          lookahead == ' ') ADVANCE(387);
       if (lookahead != 0 &&
-          lookahead != '\n') ADVANCE(387);
+          lookahead != '\n') ADVANCE(388);
+      END_STATE();
+    case 388:
+      ACCEPT_TOKEN(aux_sym_comment_token1);
+      if (lookahead != 0 &&
+          lookahead != '\n') ADVANCE(388);
       END_STATE();
     default:
       return false;
@@ -4364,7 +4369,7 @@ static const TSLexMode ts_lex_modes[STATE_COUNT] = {
   [171] = {.lex_state = 0},
   [172] = {.lex_state = 0},
   [173] = {.lex_state = 0},
-  [174] = {.lex_state = 386},
+  [174] = {.lex_state = 387},
 };
 
 static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {

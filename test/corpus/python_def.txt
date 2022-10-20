@@ -9,8 +9,8 @@ def thing():
 
     if thing:
         bb.plain("hello, world")
-
     # Python comment
+# Still a Python comment
     bb.plain("hello, world")
 A = "back to normal"
 
