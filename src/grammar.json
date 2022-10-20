@@ -215,7 +215,7 @@
         },
         {
           "type": "STRING",
-          "value": "}"
+          "value": "\n}"
         }
       ]
     },
@@ -862,7 +862,7 @@
       "type": "IMMEDIATE_TOKEN",
       "content": {
         "type": "PATTERN",
-        "value": "([ \\t].+|)\\n"
+        "value": "([ \\t#].+|)\\n"
       }
     },
     "comment": {
