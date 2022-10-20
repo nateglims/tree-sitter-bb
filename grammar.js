@@ -50,7 +50,7 @@ module.exports = grammar({
             $.block
         )),
 
-        block: $ => seq('{', optional($.code_body), '}'),
+        block: $ => seq('{', optional($.code_body), '\n}'),
 
         code_body: $ => repeat1(seq(/[^\n]+/)),
 

@@ -48,3 +48,20 @@ python() {
   (python_task_declaration
     (block
       (code_body))))
+
+=================================
+Python Task with Bracket
+=================================
+
+python() {
+    a_set = {
+        "a",
+    }
+}
+
+---
+
+(source_file
+  (python_task_declaration
+    (block
+      (code_body))))

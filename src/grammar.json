@@ -215,7 +215,7 @@
         },
         {
           "type": "STRING",
-          "value": "}"
+          "value": "\n}"
         }
       ]
     },
